@@ -1,0 +1,32 @@
+newmtl black
+Ns 10
+Ka 0 0 0
+Kd 0.25 0.25 0.25
+Ks 0 0 0
+d 1
+newmtl manche
+Ns 10
+Ka 0 0 0
+Kd 0.3 0.3 0.3
+Ks 0 0 0
+d 1
+newmtl gris_acier
+Ns 103
+Ka 0.68627 0.68627 0.68627
+Kd 1 1 1
+Ks 0.2 0.2 0.2
+d 1
+newmtl skin
+Ns 100
+Ka 0 0 0
+Kd 1 0.94902 0.905882
+Ks 0.6 0.550588 0.487059
+map_Kd BB5907.png
+d 1
+newmtl joint
+Ns 30
+Ka 0 0 0
+Kd 0.698039 0.686275 0.67451
+Ks 0.364706 0.337255 0.298039
+map_Kd BB5907.png
+d 1

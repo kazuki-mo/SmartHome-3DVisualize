@@ -1,0 +1,54 @@
+newmtl Preview:1
+Ns 10
+Ka 0 0 0
+Kd 0.470581 0.431366 0.368622
+Ks 0 0 0
+d 1
+newmtl Preview:2
+Ns 50
+Ka 0 0 0
+Kd 0.543199 0.904019 0.668599
+Ks 0.0416639 0.0930448 0.0873379
+d 1
+newmtl fabricC:2
+Ns 10
+Ka 0 0 0
+Kd 0 0.0352941 0.839216
+Ks 0.0384314 0.0388235 0.0423529
+map_Kd fabric_base.jpg
+map_Bump  fabric_base.jpg
+d 1
+newmtl metal:2
+Ns 2.22222
+Ka 0 0 0
+Kd 0.376471 0.384314 0.403922
+Ks 0.6 0.6 0.6
+d 1
+newmtl black:2
+Ns 10
+Ka 0 0 0
+Kd 0.0117647 0.0117647 0.0117647
+Ks 0.6 0.6 0.6
+d 1
+newmtl tabletop:2
+Ns 10
+Ka 0 0 0
+Kd 0.8 0.8 0.8
+Ks 0.6 0.6 0.6
+d 1
+newmtl fabricE:2
+Ns 10
+Ka 0 0 0
+Kd 0.807843 0 0.133333
+Ks 0.0384314 0.0388235 0.0423529
+map_Kd fabric_base.jpg
+map_Bump  fabric_base.jpg
+d 1
+newmtl fabric:2
+Ns 10
+Ka 0 0 0
+Kd 0.807843 0 0.133333
+Ks 0.0384314 0.0388235 0.0423529
+map_Kd fabric_base.jpg
+map_Bump  fabric_base.jpg
+d 1

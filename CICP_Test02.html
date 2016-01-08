@@ -1,0 +1,1799 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Json Test</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+
+    <!--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />-->
+    <!--<script src="http://code.jquery.com/jquery-1.10.2.js"></script>-->
+    <!--<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>-->
+    <!--<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
+
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/MTLLoader.js"></script>
+    <script src="js/OBJMTLLoader.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            var Flag_WattCheck = false;
+            var Flag_RealMode = false;
+            var Flag_Need_RemoveMoyaObject = false;
+            var Flag_Need_RemoveActiveObject = false;
+
+            var NowActiveName;
+            var NowPosition_x;
+            var NowPosition_y;
+            var NowWatt_Aircon;
+            var NowWatt_TV;
+            var NowWatt_Fan;
+            var NowWatt_Microwave;
+            var NowWatt_Rice;
+            var NowWatt_Freg;
+            var NowWatt_Airpot;
+
+            postReal();
+            $('#Div_Real').hide();
+
+            $('#1-real').click(function () {
+                $('#Lb_select_mode').text("リアルタイム表示モード");
+                $('#Div_Real').show();
+                Flag_RealMode = true;
+            });
+            $('#1-past').click(function () {
+                $('#Lb_select_mode').text("期間指定表示モード");
+                $('#Div_Real').hide();
+                Flag_RealMode = false;
+            });
+
+            $('#WattCheck').change(function () {
+                if ($(this).is(':checked')) {
+                    Flag_WattCheck = true;
+                    Flag_Need_RemoveMoyaObject = false;
+                } else {
+                    if (Flag_Need_RemoveMoyaObject) {
+                        scene.remove(AirconMoyaObject);
+                        scene.remove(TVMoyaObject);
+                        scene.remove(FanMoyaObject);
+                        scene.remove(MicrowaveMoyaObject);
+                        scene.remove(AirpotMoyaObject);
+                        scene.remove(RiceMoyaObject);
+                        scene.remove(FregMoyaObject);
+
+                        sleep(100, function () { myRender(); });
+                    }
+                    Flag_WattCheck = false;
+                }
+            });
+
+            //login page
+            $('#bt_login').click(function () {
+                $('#userid').text($('#input_userid').val());
+                $('#password').text($('#input_password').val());
+            });
+
+            $('#dis_logindialog').click(function () {
+                $('#input_userid').val("");
+                $('#input_password').val("");
+            });
+
+            var CameraPosition_x = 4;
+            var CameraPosition_y = 8;
+            var CameraPosition_z = 25;
+            var CameraPosition_x2 = CameraPosition_x;
+            var CameraPosition_y2 = CameraPosition_y;
+            var CameraPosition_z2 = CameraPosition_z;
+
+            var ActiveObject;
+            var AirconMoyaObject;
+            var TVMoyaObject;
+            var FanMoyaObject;
+            var MicrowaveMoyaObject;
+            var RiceMoyaObject;
+            var AirpotMoyaObject;
+            var FregMoyaObject;
+            var Flag_MoyaFirst = true;
+
+            /** シーンの生成 **/
+            var scene = new THREE.Scene();
+
+            /** レンダラーの生成 **/
+            var renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.shadowMapEnabled = true;
+            renderer.setSize(600, 400);
+            //renderer.setClearColor(0x99bbcc, 1);
+            renderer.setClearColor(0xffffff, 1);
+            //document.body.appendChild(renderer.domElement);
+            $('#WebGL_Model').append(renderer.domElement);
+
+            /** カメラの生成 **/
+            var camera = new THREE.PerspectiveCamera(30, 600 / 400, 1, 1000);
+            camera.position.set(CameraPosition_x, CameraPosition_y, CameraPosition_z);// (右、上、手前)　←カッコ内の数字の正方向
+            //camera.rotation.x = -Math.PI / 18;
+            camera.rotation.x = 0;
+            camera.rotation.z = 0;
+            camera.rotation.y = 0;
+            camera.aspect = 600 / 400;
+
+            /** ライトの生成 **/
+            var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.3);
+            var spotLight = new THREE.SpotLight(0xffffff, 3, 160, 1.5, 19);
+            spotLight.target.position.set(0, 7, 5);
+            spotLight.position.set(0, 80, 90);
+            spotLight.castShadow = true;
+            spotLight.shadowDarkness = 0.4;
+            scene.add(spotLight);
+            scene.add(hemiLight);
+
+            /** 地面の生成 **/
+            var pGeometry = new THREE.PlaneGeometry(490, 490, 300, 300);
+            var plane = new THREE.Mesh(pGeometry, new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                shininess: 10,
+                ambient: 0xffffff
+            }));
+            plane.position.set(0, 0, 0);
+            plane.rotation.x = -90 * Math.PI / 180;
+            plane.receiveShadow = true;
+            scene.add(plane);
+
+            /** 3Dモデルを読み込む **/
+            var houseloader = new THREE.OBJMTLLoader();
+            //var house_obj_load = 'SmartHouseModel01/SmartHouseModel01.obj';
+            //var house_mtl_load = 'SmartHouseModel01/SmartHouseModel01.mtl';
+            var house_obj_load = 'SmartHouseModel01/smarthouse2.obj';
+            var house_mtl_load = 'SmartHouseModel01/smarthouse2.mtl';
+
+            houseloader.load(house_obj_load, house_mtl_load, function (object) {
+                object.position.set(0, 2, -10);
+                object.receiveShadow = true;
+                object.castShadow = true;
+                object.rotation.y = 0;
+                object.rotation.x = 0;
+                object.rotation.z = 0;
+
+                object.scale.x = 5;
+                object.scale.y = 5;
+                object.scale.z = 5;
+
+                object.traverse(function (node) {
+                    if (node instanceof THREE.Mesh) {
+                        node.castShadow = true;
+                        node.receiveShadow = true;
+                        node.ambient = 0xffffff;
+                    }
+                });
+
+                scene.add(object);
+            });
+
+            loadObject(NowActiveName);
+
+            /** レンダリング **/
+            //myRender();
+            sleep(1000, function () { myRender(); });
+
+            function myRender() {
+                //requestAnimationFrame(myRender);
+                renderer.render(scene, camera);
+            }
+
+            var CameraRot_y = 0;
+            var CameraRot_th = 0;
+
+            $("#p_top").html("Check");
+            document.onkeydown = onKeyDown;
+            function onKeyDown(evt) {
+                if (evt.keyCode == 39) {
+                    $("#p_top").html("→");
+                    CameraRot_th += 5 * Math.PI / 180.0;
+                    CameraPosition_x2 = CameraPosition_x * Math.cos(CameraRot_th) + CameraPosition_z * Math.sin(CameraRot_th);
+                    CameraPosition_z2 = (-1) * (CameraPosition_x * Math.sin(CameraRot_th) - CameraPosition_z * Math.cos(CameraRot_th));
+                    camera.position.set(CameraPosition_x2, CameraPosition_y2, CameraPosition_z2);
+                    camera.rotation.y = CameraRot_th;
+
+                    //var length = Math.sqrt(Math.pow(CameraPosition_x2, 2) + Math.pow(CameraPosition_y2, 2) + Math.pow(CameraPosition_z2, 2));
+                    //var th = Math.acos(CameraPosition_x2 / length);
+
+                    //if (CameraPosition_z2 < 0) {
+                    //    camera.rotation.y = Math.PI / 2.0 + th;
+                    //} else {
+                    //    camera.rotation.y = Math.PI / 2.0 - th;
+                    //}
+
+                    myRender();
+                } else if (evt.keyCode == 37) {
+                    $("#p_top").html("←");
+                    CameraRot_th -= 5 * Math.PI / 180.0;
+                    CameraPosition_x2 = CameraPosition_x * Math.cos(CameraRot_th) + CameraPosition_z * Math.sin(CameraRot_th);
+                    CameraPosition_z2 = (-1) * (CameraPosition_x * Math.sin(CameraRot_th) - CameraPosition_z * Math.cos(CameraRot_th));
+                    camera.position.set(CameraPosition_x2, CameraPosition_y2, CameraPosition_z2);
+                    camera.rotation.y = CameraRot_th;
+
+                    //var length = Math.sqrt(Math.pow(CameraPosition_x2, 2) + Math.pow(CameraPosition_y2, 2) + Math.pow(CameraPosition_z2, 2));
+                    //var th = Math.acos(CameraPosition_x2 / length);
+
+                    //if (CameraPosition_z2 < 0) {
+                    //    camera.rotation.y = Math.PI / 2.0 + th;
+                    //} else {
+                    //    camera.rotation.y = Math.PI / 2.0 - th;
+                    //}
+
+                    myRender();
+                } else if (evt.keyCode == 38) {
+                    $("#p_top").html("↑");
+                } else if (evt.keyCode == 40) {
+                    $("#p_top").html("↓");
+                }
+            }
+
+            $("#bt_change").click(function () {
+                $("#p_top").html("ChangeClick");
+                scene.remove(Object);
+
+                if (ActiveName == "TV") {
+                    ActiveName = "Eat";
+                    $("#p_activity").html("行動推定結果：食事中&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                } else if (ActiveName == "Eat") {
+                    ActiveName = "Cook";
+                    $("#p_activity").html("行動推定結果：料理中&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                } else if (ActiveName == "Cook") {
+                    ActiveName = "TV";
+                    $("#p_activity").html("行動推定結果：TV視聴中&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                }
+                loadObject(ActiveName);
+
+                sleep(100, function () { myRender(); });
+                //myRender();
+            });
+
+            $("#bt_moya").click(function () {
+                $("#p_top").html("MoyaClick");
+
+                if (Flag_MoyaFirst) {
+                    loadObject("TVMoya");
+                    Flag_MoyaFirst = false;
+                } else {
+                    scene.remove(MoyaObject);
+                    Flag_MoyaFirst = true;
+                }
+
+                sleep(100, function () { myRender(); });
+            });
+
+            function loadObject(active) {
+
+                if (active == "TV") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'SmartHouseModel01/Human_TV_01.obj';
+                    var human_mtl_load = 'SmartHouseModel01/Human_TV_01.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        ActiveObject = object;
+                        Flag_Need_RemoveActiveObject = true;
+                    });
+
+                } else if (active == "Meal") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'SmartHouseModel01/Human_Eating_01.obj';
+                    var human_mtl_load = 'SmartHouseModel01/Human_Eating_01.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        ActiveObject = object;
+                        Flag_Need_RemoveActiveObject = true;
+                    });
+
+                } else if (active == "Cooking") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'SmartHouseModel01/Human_Cooking_01.obj';
+                    var human_mtl_load = 'SmartHouseModel01/Human_Cooking_01.mtl';
+
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        ActiveObject = object;
+                        Flag_Need_RemoveActiveObject = true;
+                    });
+
+                } else if (active == "Cleaning") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'SmartHouseModel01/human_cleaning.obj';
+                    var human_mtl_load = 'SmartHouseModel01/human_cleaning.mtl';
+
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        ActiveObject = object;
+                        Flag_Need_RemoveActiveObject = true;
+                    });
+
+                } else if (active == "Reading") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'SmartHouseModel01/man_read.obj';
+                    var human_mtl_load = 'SmartHouseModel01/man_read.mtl';
+
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        ActiveObject = object;
+                        Flag_Need_RemoveActiveObject = true;
+                    });
+
+                } else if (active == "TVMoya_b") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_TV_b.obj';
+                    var human_mtl_load = 'models/moya_TV_b.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        TVMoyaObject = object;
+
+                    });
+
+                } else if (active == "TVMoya_g") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_TV_g.obj';
+                    var human_mtl_load = 'models/moya_TV_g.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        TVMoyaObject = object;
+
+                    });
+
+                } else if (active == "TVMoya_y") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_TV_y.obj';
+                    var human_mtl_load = 'models/moya_TV_y.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        TVMoyaObject = object;
+
+                    });
+                } else if (active == "TVMoya_o") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_TV_o.obj';
+                    var human_mtl_load = 'models/moya_TV_o.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        TVMoyaObject = object;
+
+                    });
+                } else if (active == "TVMoya_r") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_TV_r.obj';
+                    var human_mtl_load = 'models/moya_TV_r.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        TVMoyaObject = object;
+
+                    });
+                } else if (active == "AirconMoya_b") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_aircon_b.obj';
+                    var human_mtl_load = 'models/moya_aircon_b.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirconMoyaObject = object;
+
+                    });
+                } else if (active == "AirconMoya_g") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_aircon_g.obj';
+                    var human_mtl_load = 'models/moya_aircon_g.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirconMoyaObject = object;
+
+                    });
+                } else if (active == "AirconMoya_y") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_aircon_y.obj';
+                    var human_mtl_load = 'models/moya_aircon_y.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirconMoyaObject = object;
+
+                    });
+                } else if (active == "AirconMoya_o") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_aircon_o.obj';
+                    var human_mtl_load = 'models/moya_aircon_o.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirconMoyaObject = object;
+
+                    });
+                } else if (active == "AirconMoya_r") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_aircon_r.obj';
+                    var human_mtl_load = 'models/moya_aircon_r.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirconMoyaObject = object;
+
+                    });
+                } else if (active == "FanMoya_b") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_fan_b.obj';
+                    var human_mtl_load = 'models/moya_fan_b.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FanMoyaObject = object;
+
+                    });
+                } else if (active == "FanMoya_g") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_fan_g.obj';
+                    var human_mtl_load = 'models/moya_fan_g.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FanMoyaObject = object;
+
+                    });
+                } else if (active == "FanMoya_y") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_fan_y.obj';
+                    var human_mtl_load = 'models/moya_fan_y.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FanMoyaObject = object;
+
+                    });
+                } else if (active == "FanMoya_o") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_fan_o.obj';
+                    var human_mtl_load = 'models/moya_fan_o.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FanMoyaObject = object;
+
+                    });
+                } else if (active == "FanMoya_r") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_fan_r.obj';
+                    var human_mtl_load = 'models/moya_fan_r.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FanMoyaObject = object;
+
+                    });
+                } else if (active == "MicrowaveMoya_b") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_microwave_b.obj';
+                    var human_mtl_load = 'models/moya_microwave_b.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        MicrowaveMoyaObject = object;
+
+                    });
+                } else if (active == "MicrowaveMoya_g") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_microwave_g.obj';
+                    var human_mtl_load = 'models/moya_microwave_g.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        MicrowaveMoyaObject = object;
+
+                    });
+                } else if (active == "MicrowaveMoya_y") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_microwave_y.obj';
+                    var human_mtl_load = 'models/moya_microwave_y.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        MicrowaveMoyaObject = object;
+
+                    });
+                } else if (active == "MicrowaveMoya_o") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_microwave_o.obj';
+                    var human_mtl_load = 'models/moya_microwave_o.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        MicrowaveMoyaObject = object;
+
+                    });
+                } else if (active == "MicrowaveMoya_r") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_microwave_r.obj';
+                    var human_mtl_load = 'models/moya_microwave_r.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        MicrowaveMoyaObject = object;
+                    });
+                } else if (active == "RiceMoya_b") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_rice_b.obj';
+                    var human_mtl_load = 'models/moya_rice_b.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        RiceMoyaObject = object;
+
+                    });
+                } else if (active == "RiceMoya_g") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_rice_g.obj';
+                    var human_mtl_load = 'models/moya_rice_g.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        RiceMoyaObject = object;
+
+                    });
+                } else if (active == "RiceMoya_y") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_rice_y.obj';
+                    var human_mtl_load = 'models/moya_rice_y.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        RiceMoyaObject = object;
+
+                    });
+                } else if (active == "RiceMoya_o") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_rice_o.obj';
+                    var human_mtl_load = 'models/moya_rice_o.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        RiceMoyaObject = object;
+
+                    });
+                } else if (active == "RiceMoya_r") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_rice_r.obj';
+                    var human_mtl_load = 'models/moya_rice_r.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        RiceMoyaObject = object;
+
+                    });
+                } else if (active == "AirpotMoya_b") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_airpot_b.obj';
+                    var human_mtl_load = 'models/moya_airpot_b.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirpotMoyaObject = object;
+
+                    });
+                } else if (active == "AirpotMoya_g") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_airpot_g.obj';
+                    var human_mtl_load = 'models/moya_airpot_g.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirpotMoyaObject = object;
+
+                    });
+                } else if (active == "AirpotMoya_y") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_airpot_y.obj';
+                    var human_mtl_load = 'models/moya_airpot_y.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirpotMoyaObject = object;
+
+                    });
+                } else if (active == "AirpotMoya_o") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_airpot_o.obj';
+                    var human_mtl_load = 'models/moya_airpot_o.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirpotMoyaObject = object;
+
+                    });
+                } else if (active == "AirpotMoya_r") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_airpot_r.obj';
+                    var human_mtl_load = 'models/moya_airpot_r.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        AirpotMoyaObject = object;
+
+                    });
+                } else if (active == "FregMoya_b") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_freg_b.obj';
+                    var human_mtl_load = 'models/moya_freg_b.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FregMoyaObject = object;
+
+                    });
+                } else if (active == "FregMoya_g") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_freg_g.obj';
+                    var human_mtl_load = 'models/moya_freg_g.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FregMoyaObject = object;
+
+                    });
+                } else if (active == "FregMoya_y") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_freg_y.obj';
+                    var human_mtl_load = 'models/moya_freg_y.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FregMoyaObject = object;
+
+                    });
+                } else if (active == "FregMoya_o") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_freg_o.obj';
+                    var human_mtl_load = 'models/moya_freg_o.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FregMoyaObject = object;
+
+                    });
+                } else if (active == "FregMoya_r") {
+
+                    var humanloader = new THREE.OBJMTLLoader();
+                    var human_obj_load = 'models/moya_freg_r.obj';
+                    var human_mtl_load = 'models/moya_freg_r.mtl';
+
+                    humanloader.load(human_obj_load, human_mtl_load, function (object) {
+                        object.position.set(0, 2, -10);
+                        object.receiveShadow = true;
+                        object.castShadow = true;
+                        object.rotation.y = 0;
+                        object.rotation.x = 0;
+                        object.rotation.z = 0;
+
+                        object.scale.x = 5;
+                        object.scale.y = 5;
+                        object.scale.z = 5;
+
+                        object.traverse(function (node) {
+                            if (node instanceof THREE.Mesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                node.ambient = 0xffffff;
+                            }
+                        });
+
+                        scene.add(object);
+                        FregMoyaObject = object;
+
+                    });
+                }
+            }
+
+            function sleep(time, callback) {
+                setTimeout(callback, time);
+            }
+
+            setInterval(function () {
+                if (Flag_RealMode) {
+
+                    postReal();
+                    if (Flag_Need_RemoveActiveObject) {
+                        //ActiveObject.geometry.dispose();
+                        //ActiveObject.material.dispose();
+                        scene.remove(ActiveObject);
+                        Flag_Need_RemoveActiveObject = false;
+                    }
+                    if (NowActiveName != "Out") {
+                        loadObject(NowActiveName);
+                        //Flag_Need_RemoveActiveObject = true;
+                    }
+                    
+                    
+                    $('#Lb_NowActive').text(NowActiveName);
+                    $('#Lb_NowPosition').text("( "+NowPosition_x+" , "+NowPosition_y+" )");
+                    $('#Lb_NowWatt_Aircon').text(NowWatt_Aircon + " W");
+                    $('#Lb_NowWatt_TV').text(NowWatt_TV + " W");
+                    $('#Lb_NowWatt_Fan').text(NowWatt_Fan + " W");
+                    $('#Lb_NowWatt_Microwave').text(NowWatt_Microwave + " W");
+                    $('#Lb_NowWatt_Airpot').text(NowWatt_Airpot + " W");
+                    $('#Lb_NowWatt_Rice').text(NowWatt_Rice + " W");
+                    $('#Lb_NowWatt_Freg').text(NowWatt_Freg + " W");
+
+                    if (Flag_WattCheck) {
+                        var NowWatt_Aircon_value = parseFloat(NowWatt_Aircon);
+                        var NowWatt_TV_value = parseFloat(NowWatt_TV);
+                        var NowWatt_Fan_value = parseFloat(NowWatt_Fan);
+                        var NowWatt_Microwave_value = parseFloat(NowWatt_Microwave);
+                        var NowWatt_Airpot_value = parseFloat(NowWatt_Airpot);
+                        var NowWatt_Rice_value = parseFloat(NowWatt_Rice);
+                        var NowWatt_Freg_value = parseFloat(NowWatt_Freg);
+
+                        if (Flag_Need_RemoveMoyaObject) {
+                            scene.remove(AirconMoyaObject);
+                            scene.remove(TVMoyaObject);
+                            scene.remove(FanMoyaObject);
+                            scene.remove(MicrowaveMoyaObject);
+                            scene.remove(AirpotMoyaObject);
+                            scene.remove(RiceMoyaObject);
+                            scene.remove(FregMoyaObject);
+                        }
+                        if (NowWatt_Aircon_value < 100) {
+                            loadObject("AirconMoya_b");
+                        } else if (NowWatt_Aircon_value < 200) {
+                            loadObject("AirconMoya_g");
+                        } else if (NowWatt_Aircon_value < 300) {
+                            loadObject("AirconMoya_y");
+                        } else if (NowWatt_Aircon_value < 400) {
+                            loadObject("AirconMoya_o");
+                        } else {
+                            loadObject("AirconMoya_r");
+                        }
+                        if (NowWatt_TV_value < 30) {
+                            loadObject("TVMoya_b");
+                        } else if (NowWatt_TV_value < 40) {
+                            loadObject("TVMoya_g");
+                        } else if (NowWatt_TV_value < 50) {
+                            loadObject("TVMoya_y");
+                        } else if (NowWatt_TV_value < 60) {
+                            loadObject("TVMoya_o");
+                        } else {
+                            loadObject("TVMoya_r");
+                        }
+                        if (NowWatt_Fan_value < 5) {
+                            loadObject("FanMoya_b");
+                        } else if (NowWatt_Fan_value < 10) {
+                            loadObject("FanMoya_g");
+                        } else if (NowWatt_Fan_value < 15) {
+                            loadObject("FanMoya_y");
+                        } else if (NowWatt_Fan_value < 20) {
+                            loadObject("FanMoya_o");
+                        } else {
+                            loadObject("FanMoya_r");
+                        }
+                        if (NowWatt_Microwave_value < 200) {
+                            loadObject("MicrowaveMoya_b");
+                        } else if (NowWatt_Microwave_value < 400) {
+                            loadObject("MicrowaveMoya_g");
+                        } else if (NowWatt_Microwave_value < 600) {
+                            loadObject("MicrowaveMoya_y");
+                        } else if (NowWatt_Microwave_value < 800) {
+                            loadObject("MicrowaveMoya_o");
+                        } else {
+                            loadObject("MicrowaveMoya_r");
+                        }
+                        if (NowWatt_Rice_value < 10) {
+                            loadObject("RiceMoya_b");
+                        } else if (NowWatt_Rice_value < 50) {
+                            loadObject("RiceMoya_g");
+                        } else if (NowWatt_Rice_value < 100) {
+                            loadObject("RiceMoya_y");
+                        } else if (NowWatt_Rice_value < 200) {
+                            loadObject("RiceMoya_o");
+                        } else {
+                            loadObject("RiceMoya_r");
+                        }
+                        if (NowWatt_Airpot_value < 10) {
+                            loadObject("AirpotMoya_b");
+                        } else if (NowWatt_Airpot_value < 50) {
+                            loadObject("AirpotMoya_g");
+                        } else if (NowWatt_Airpot_value < 300) {
+                            loadObject("AirpotMoya_y");
+                        } else if (NowWatt_Airpot_value < 900) {
+                            loadObject("AirpotMoya_o");
+                        } else {
+                            loadObject("AirpotMoya_r");
+                        }
+                        if (NowWatt_Freg_value < 10) {
+                            loadObject("FregMoya_b");
+                        } else if (NowWatt_Freg_value < 30) {
+                            loadObject("FregMoya_g");
+                        } else if (NowWatt_Freg_value < 70) {
+                            loadObject("FregMoya_y");
+                        } else if (NowWatt_Freg_value < 100) {
+                            loadObject("FregMoya_o");
+                        } else {
+                            loadObject("FregMoya_r");
+                        }
+                        Flag_Need_RemoveMoyaObject = true;
+                    }
+                    
+                    sleep(100, function () { myRender(); });
+                }
+            }, 10000);
+
+            function postReal() {
+
+                var sendData = { pw: null, since: null, until: null, num: 1, orderby: "desc", unitlist: null, noDate: true };
+
+                $.ajax({
+                    type: 'post',
+                    url: 'http://8k3kx36e19v68g.home-ip.aterm.jp/Cats/api/data/CICP/SmartHouse',
+                    data: JSON.stringify(sendData),
+                    contentType: 'application/JSON',
+                    dataType: 'json',
+                    scriptCharset: 'utf-8',
+
+                    success: function (response) {
+
+                        //$("#Log").text("Response : =" + JSON.stringify(response.data));
+                        NowActiveName = response.data[0][10];
+                        NowPosition_x = response.data[0][0];
+                        NowPosition_y = response.data[0][1];
+                        NowWatt_Aircon = response.data[0][9];
+                        NowWatt_TV = response.data[0][3];
+                        NowWatt_Fan = response.data[0][5];
+                        NowWatt_Microwave = response.data[0][6];
+                        NowWatt_Rice = response.data[0][4];
+                        NowWatt_Airpot = response.data[0][8];
+                        NowWatt_Freg = response.data[0][7];
+                    },
+
+                    error: function (errorMsg) {
+                        $("#Log").text("失敗！\n" + errorMsg[0]);
+                    }
+
+                });
+            }
+        });
+
+    </script>
+</head>
+
+<body>
+
+    <!-- main page -->
+    <section id="main" data-role="page">
+        <!-- header -->
+        <header data-role="header">
+            <a href="#menu" data-role="button" id="openmenu" data-icon="bars">ユーザリスト</a>
+            <h1>スマートホーム3D可視化システム</h1>
+            <a href="#logindialog" data-role="button" data-rel="dialog" class="ui-btn-right" id="dis_logindialog" data-icon="check">ログイン</a>
+        </header>
+
+        <!-- content -->
+        <article id="content_home" data-role="content">
+            <h1 id="Lb_select_mode">ユーザと表示モードを選択してください。</h1>
+
+            <div id="Div_Real">
+                <!--<div id="Div_UserInfo" data-role="controlgroup" data-type="horizontal" style="display: table;">-->
+                <div id="Div_UserInfo" style="display: table;">
+                    <div style="display:table-cell;">
+                        <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; User1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                    </div>
+                    <div style="display:table-cell; vertical-align:middle;">
+                        <a href="#userinfo" data-role="button" id="openuserinfo" data-icon="bars">ユーザ情報</a>
+                    </div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div style="display:table-cell; vertical-align:middle;">
+                        <form>
+                            <label>
+                                <input id="WattCheck" name="checkbox-0 " type="checkbox" />電力オーラ 表示
+                            </label>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="Div_NowActive" style="display: table;">
+                    <p style="display:table-cell;">行動推定結果：&nbsp;&nbsp;&nbsp;&nbsp;</p> <p id="Lb_NowActive" style="display:table-cell;">  </p>
+                </div>
+                <div id="WebGL_Model">
+
+                </div>
+                <div id="Div_NowPosition" style="display: table;">
+                    <p style="display:table-cell;">位置情報結果：&nbsp;&nbsp;&nbsp;&nbsp;</p> <p id="Lb_NowPosition" style="display:table-cell;">  </p>
+                </div>
+                <br />
+                <div id="Div_NowWatt_Aircon" style="display: table;">
+                    <p style="display:table-cell;">エアコン：&nbsp;&nbsp;&nbsp;&nbsp;</p> <p id="Lb_NowWatt_Aircon" style="display:table-cell;">  </p>
+                </div>
+                <div id="Div_NowWatt_TV" style="display: table;">
+                    <p style="display:table-cell;">TV：&nbsp;&nbsp;&nbsp;&nbsp;</p> <p id="Lb_NowWatt_TV" style="display:table-cell;">  </p>
+                </div>
+                <div id="Div_NowWatt_Fan" style="display: table;">
+                    <p style="display:table-cell;">扇風機：&nbsp;&nbsp;&nbsp;&nbsp;</p> <p id="Lb_NowWatt_Fan" style="display:table-cell;">  </p>
+                </div>
+                <div id="Div_NowWatt_Rice" style="display: table;">
+                    <p style="display:table-cell;">炊飯器：&nbsp;&nbsp;&nbsp;&nbsp;</p> <p id="Lb_NowWatt_Rice" style="display:table-cell;">  </p>
+                </div>
+                <div id="Div_NowWatt_Microwave" style="display: table;">
+                    <p style="display:table-cell;">電子レンジ：&nbsp;&nbsp;&nbsp;&nbsp;</p> <p id="Lb_NowWatt_Microwave" style="display:table-cell;">  </p>
+                </div>
+                <div id="Div_NowWatt_Freg" style="display: table;">
+                    <p style="display:table-cell;">冷蔵庫：&nbsp;&nbsp;&nbsp;&nbsp;</p> <p id="Lb_NowWatt_Freg" style="display:table-cell;">  </p>
+                </div>
+                <div id="Div_NowWatt_Airpot" style="display: table;">
+                    <p style="display:table-cell;">ポット：&nbsp;&nbsp;&nbsp;&nbsp;</p> <p id="Lb_NowWatt_Airpot" style="display:table-cell;">  </p>
+                </div>
+
+                <br />
+                <p id="Log"></p>
+            </div>
+            
+        </article>
+        <!-- user info -->
+        <div id="userinfo" data-role="panel" data-position="right" data-display="overlay" data-theme="a" data-dismissible="false">
+            <ul data-role="listview" data-inset="true" data-divider-theme="e">
+                <li data-role="list-divider">ニックネーム</li>
+                <li id="nickname">まりも</li>
+                <li data-role="list-divider">所属</li>
+                <li id="affiliation">NAIST ユビ研</li>
+                <li data-role="list-divider">詳細</li>
+                <li id="detail">てすとユーザ１</li>
+                <li data-role="list-divider">メールアドレス</li>
+                <li id="mailaddress">hoge@fuga.com</li>
+                <li data-role="list-divider">固定電話</li>
+                <li id="phonenum">xxxx-xx-xxxx</li>
+                <li data-role="list-divider">携帯電話</li>
+                <li id="cellphonenum">yyy-yyyy-yyyy</li>
+            </ul>
+            <button data-rel="close" data-role="button" data-icon="delete" data-theme="b">閉じる</button>
+        </div>
+
+
+        <!-- menu -->
+        <div id="menu" data-role="panel" data-position="left" data-display="push" data-theme="a" data-dismissible="false">
+            <h2>ユーザリスト<a href="#demo-links" data-rel="close" data-role="button" data-theme="a" data-icon="delete" data-inline="true" data-mini="true" data-iconpos="notext"></a></h2>
+
+            <!-- module set list -->
+            <div id="modulesetlist" data-role="collapsible-set" data-theme="a" data-content-theme="c" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u" data-iconpos="right">
+                <div id="moduleset-1" data-role="collapsible" style="text-align:center;">
+                    <h3 id="1"> User1 </h3>
+                    <ul id="modulelist-1" data-role="listview" data-icon="false" data-iconpos="bottom">
+                        <li><a id="1-real" style="text-align:center;" onclick="realclick()"> リアルタイムモード </a></li>
+                        <li><a id="1-past" style="text-align:center;" onclick="pastclick()"> 期間指定モード </a></li>
+                    </ul>
+                </div>
+                <div id="moduleset-2" data-role="collapsible" style="text-align:center;">
+                    <h3 id="2"> User2 </h3>
+                    <ul id="modulelist-2" data-role="listview" data-icon="false" data-iconpos="bottom">
+                        <li><a id="2-real" style="text-align:center;"> リアルタイムモード </a></li>
+                        <li><a id="2-past" style="text-align:center;"> 期間指定モード </a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <p id="userid"></p>
+            <p id="password"></p>
+        </div>
+
+    </section>
+    <!-- login dialog -->
+    <section id="logindialog" data-role="page">
+
+        <!-- header -->
+        <header data-role="header">
+            <h1>ログイン画面</h1>
+        </header>
+
+        <!-- content -->
+        <article data-role="content">
+            <p>ユーザーID:</p>
+            <input id="input_userid" type="text" value="" data-inline="true" data-iconpos="right" />
+            <p>パスワード:</p>
+            <input id="input_password" type="password" value="" data-inline="true" data-iconpos="right" />
+        </article>
+
+        <!-- footer -->
+        <footer data-role="footer">
+            <div class="ui-grid-a">
+                <div class="ui-block-a"><a type="button" id="bt_login" href="#main">ログイン</a></div>
+                <div class="ui-block-b"><a type="button" id="bt_cancel" href="#main">キャンセル</a></div>
+            </div>
+        </footer>
+    </section>
+
+</body>
+</html>

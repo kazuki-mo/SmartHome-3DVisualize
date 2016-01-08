@@ -1,0 +1,50 @@
+newmtl CoverFlat:1
+Ns 0.125
+Ka 0 0 0
+Kd 0.784314 0 0
+Ks 0.1 0.1 0.1
+d 1
+newmtl CoverSmooth:1
+Ns 0.125
+Ka 0 0 0
+Kd 0.784314 0 0
+Ks 0.1 0.1 0.1
+d 1
+newmtl BackCover:1
+Ns 0.125
+Ka 0 0 0
+Kd 0.784314 0 0
+Ks 0.1 0.1 0.1
+d 1
+newmtl FrontCover:1
+Ns 0.125
+Ka 0 0 0
+Kd 0.784314 0 0
+Ks 0.1 0.1 0.1
+d 1
+newmtl BookFlat:1
+Ns 0.125
+Ka 0 0 0
+Kd 1 1 1
+Ks 0.1 0.1 0.1
+d 1
+newmtl BookSmooth:1
+Ns 0.125
+Ka 0 0 0
+Kd 1 1 1
+Ks 0.1 0.1 0.1
+d 1
+newmtl skin:2
+Ns 100
+Ka 0 0 0
+Kd 1 0.94902 0.905882
+Ks 0.6 0.550588 0.487059
+map_Kd BB5907.png
+d 1
+newmtl joint:2
+Ns 30
+Ka 0 0 0
+Kd 0.698039 0.686275 0.67451
+Ks 0.364706 0.337255 0.298039
+map_Kd BB5907.png
+d 1

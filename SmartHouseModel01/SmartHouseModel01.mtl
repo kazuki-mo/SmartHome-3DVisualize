@@ -1,0 +1,466 @@
+newmtl Preview:1
+Ns 10
+Ka 0.415686 0.415686 0.415686
+Kd 0.992157 0.992157 0.992157
+Ks 1 1 1
+d 1
+newmtl Preview:2
+Ns 0.1
+Ka 0.380392 0.380392 0.380392
+Kd 0.996078 0.996078 0.996078
+Ks 1 1 1
+d 1
+newmtl Preview:3
+Ns 10
+Ka 0 0 0
+Kd 1 1 1
+Ks 0.664314 0.664314 0.667059
+map_Kd floor.jpg
+d 1
+newmtl dark_leather:4
+Ns 7.84314
+Ka 0 0 0
+Kd 0.211765 0.168627 0.12549
+Ks 0.08 0.08 0.08
+d 1
+newmtl tacks:4
+Ns 96.0784
+Ka 0 0 0
+Kd 0.370196 0.379608 0.059608
+Ks 1.1884 1.1884 1.1884
+d 1
+newmtl wooden_leg_wood_for_legs.jpg:4
+Ns 96.0784
+Ka 0 0 0
+Kd 0.385882 0.203922 0.050196
+Ks 0.5 0.5 0.5
+map_Kd wood_for_legs.jpg
+d 1
+newmtl Counters:5
+Ns 96.0784
+Ka 0 0 0
+Kd 0.619608 0.478431 0
+Ks 0.5 0.5 0.5
+d 1
+newmtl Black_paint:5
+Ns 256.863
+Ka 0 0 0
+Kd 0.780392 0.588235 0.0509804
+Ks 0.881118 0.881118 0.881118
+d 1
+newmtl BoisBlanc:1:6
+Ns 103
+Ka 0 0 0
+Kd 0.894118 0.85098 0
+Ks 0.04 0.04 0.04
+map_Kd tableBasse_BoisBlanc.jpg
+d 1
+newmtl VerreBlanc:1:6
+Ns 122
+Ka 0 0 0
+Kd 0.6693 0.6693 0.6693
+Ks 0.51336 0.552 0.53577
+d 1
+newmtl GrisMat:1:6
+Ns 65
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+map_Kd tableBasse_GrisMat.png
+d 1
+newmtl Default_Texture:1:6
+Ns 1
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+newmtl grey:2:6
+Ns 10
+Ka 0 0 0
+Kd 0.0235294 0.0235294 0.0235294
+Ks 0.6 0.6 0.6
+d 1
+newmtl ltgrey:2:6
+Ns 10
+Ka 0 0 0
+Kd 0.639216 0.639216 0.639216
+Ks 0.6 0.6 0.6
+d 1
+newmtl ruby:2:6
+Ns 10
+Ka 0 0 0
+Kd 0.8 0.8 0.8
+Ks 0.6 0.6 0.6
+d 1
+newmtl dvdbox_extras_dvd.tga:3:6
+Ns 21.5686
+Ka 0 0 0
+Kd 0.193364 0.192977 0.192977
+Ks 0.706335 0.706335 0.706335
+map_Kd extras_dvd.png
+d 1
+newmtl dvdblack_dvd_time.jpg:3:6
+Ns 154.902
+Ka 0 0 0
+Kd 0.047101 0.04641 0.04641
+Ks 0.706335 0.706335 0.706335
+map_Kd dvd_time.jpg
+d 1
+newmtl dvdbuttonsbox:3:6
+Ns 21.5686
+Ka 0 0 0
+Kd 0.352139 0.352139 0.352139
+Ks 1.17796 1.17796 1.17796
+d 1
+newmtl dvdbuttons:3:6
+Ns 21.5686
+Ka 0 0 0
+Kd 0.460173 0.460173 0.460173
+Ks 0.735812 0.735812 0.735812
+d 1
+newmtl dvdbut_plays:3:6
+Ns 139.216
+Ka 0 0 0
+Kd 0.574563 0.574563 0.574563
+Ks 0.470524 0.470524 0.470524
+d 1
+newmtl dvdgray:3:6
+Ns 21.5686
+Ka 0 0 0
+Kd 0.28859 0.28859 0.28859
+Ks 0.706335 0.706335 0.706335
+d 1
+newmtl metall:3:6
+Ns 64.7059
+Ka 0 0 0
+Kd 0.456153 0.456153 0.456153
+Ks 1.61755 1.61755 1.61755
+d 1
+newmtl fusta_taula_tipical.j_tipical.jpg:7
+Ns 78.4314
+Ka 0 0 0
+Kd 0.474353 0.38651 0.273569
+Ks 0.235353 0.235353 0.235353
+map_Kd tipical.jpg
+d 1
+newmtl coixi_cadira.001:8
+Ns 78.4314
+Ka 0 0 0
+Kd 0.356863 0.396078 0
+Ks 0.001 0.001 0.001
+d 1
+newmtl fusta_taula_tipic.001_tipical.jpg:8
+Ns 78.4314
+Ka 0 0 0
+Kd 0.952941 0.94902 0.937255
+Ks 0.235353 0.235353 0.235353
+map_Kd tipical.jpg
+d 1
+newmtl Preview:9
+Ns 50
+Ka 0 0 0
+Kd 0.407971 0.57915 0.160405
+Ks 0.140837 0.198987 0.100522
+d 1
+newmtl coixi_cadira.001:9
+Ns 78.4314
+Ka 0 0 0
+Kd 0.454902 0.47451 0.0509804
+Ks 0.001 0.001 0.001
+d 1
+newmtl fusta_taula_tipic.001_tipical.jpg:9
+Ns 78.4314
+Ka 0 0 0
+Kd 0.968627 0.964706 0.956863
+Ks 0.235353 0.235353 0.235353
+map_Kd tipical.jpg
+d 1
+newmtl Preview:10
+Ns 50
+Ka 0 0 0
+Kd 0.925596 0.572497 0.1395
+Ks 0.0192938 0.0415845 0.111405
+d 1
+newmtl glass:10
+Ns 50
+Ka 0 0 0
+Kd 0.2 0.2 0.2
+Ks 1 1 1
+d 0.1
+newmtl trim:10
+Ns 10
+Ka 0 0 0
+Kd 0.00392157 0.00392157 0.00392157
+Ks 0.281177 0.281177 0.281177
+d 1
+newmtl Preview:11
+Ns 50
+Ka 0 0 0
+Kd 0.925596 0.572497 0.1395
+Ks 0.0192938 0.0415845 0.111405
+d 1
+newmtl glass:11
+Ns 50
+Ka 0 0 0
+Kd 0.2 0.2 0.2
+Ks 1 1 1
+d 0.2
+newmtl trim:11
+Ns 10
+Ka 0 0 0
+Kd 0.00392157 0.00392157 0.00392157
+Ks 0.281177 0.281177 0.281177
+d 1
+newmtl Preview:12
+Ns 50
+Ka 0 0 0
+Kd 0.00552385 0.875362 0.760491
+Ks 0.13433 0.117551 0.0686483
+d 1
+newmtl outertrim:12
+Ns 10
+Ka 0 0 0
+Kd 0.00392157 0.00392157 0.00392157
+Ks 0.281177 0.281177 0.281177
+d 1
+newmtl innertrim:12
+Ns 10
+Ka 0 0 0
+Kd 0.00392157 0.00392157 0.00392157
+Ks 0.281177 0.281177 0.281177
+d 1
+newmtl Preview:13
+Ns 50
+Ka 0 0 0
+Kd 0.978057 0.512711 0.881161
+Ks 0.0239326 0.0177679 0.0956267
+d 1
+newmtl BoisBlanc:1:13
+Ns 103
+Ka 0 0 0
+Kd 0.894118 0.85098 0
+Ks 0.04 0.04 0.04
+map_Kd tableBasse_BoisBlanc.jpg
+d 1
+newmtl VerreBlanc:1:13
+Ns 122
+Ka 0 0 0
+Kd 0.6693 0.6693 0.6693
+Ks 0.51336 0.552 0.53577
+d 1
+newmtl GrisMat:1:13
+Ns 65.0001
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+map_Kd tableBasse_GrisMat.png
+d 1
+newmtl Default_Texture:1:13
+Ns 1
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+newmtl grey:2:13
+Ns 10
+Ka 0 0 0
+Kd 0.0235294 0.0235294 0.0235294
+Ks 0.6 0.6 0.6
+d 1
+newmtl ltgrey:2:13
+Ns 10
+Ka 0 0 0
+Kd 0.639216 0.639216 0.639216
+Ks 0.6 0.6 0.6
+d 1
+newmtl ruby:2:13
+Ns 10
+Ka 0 0 0
+Kd 0.8 0.8 0.8
+Ks 0.6 0.6 0.6
+d 1
+newmtl dvdbox_extras_dvd.tga:3:13
+Ns 21.5686
+Ka 0 0 0
+Kd 0.193364 0.192977 0.192977
+Ks 0.706335 0.706335 0.706335
+map_Kd extras_dvd.png
+d 1
+newmtl dvdblack_dvd_time.jpg:3:13
+Ns 154.902
+Ka 0 0 0
+Kd 0.047101 0.04641 0.04641
+Ks 0.706335 0.706335 0.706335
+map_Kd dvd_time.jpg
+d 1
+newmtl dvdbuttonsbox:3:13
+Ns 21.5686
+Ka 0 0 0
+Kd 0.352139 0.352139 0.352139
+Ks 1.17796 1.17796 1.17796
+d 1
+newmtl dvdbuttons:3:13
+Ns 21.5686
+Ka 0 0 0
+Kd 0.460173 0.460173 0.460173
+Ks 0.735812 0.735812 0.735812
+d 1
+newmtl dvdbut_plays:3:13
+Ns 139.216
+Ka 0 0 0
+Kd 0.574563 0.574563 0.574563
+Ks 0.470524 0.470524 0.470524
+d 1
+newmtl dvdgray:3:13
+Ns 21.5686
+Ka 0 0 0
+Kd 0.28859 0.28859 0.28859
+Ks 0.706335 0.706335 0.706335
+d 1
+newmtl metall:3:13
+Ns 64.7061
+Ka 0 0 0
+Kd 0.456153 0.456153 0.456153
+Ks 1.61755 1.61755 1.61755
+d 1
+newmtl Preview:14
+Ns 0.1
+Ka 0.380392 0.380392 0.380392
+Kd 0.996078 0.996078 0.996078
+Ks 1 1 1
+d 1
+newmtl flwhite:15
+Ns 10
+Ka 0.709804 0.607843 0.427451
+Kd 0.858824 0.729412 0.505882
+Ks 0.831373 0.705882 0.490196
+d 1
+newmtl FAN_BLADE:16
+Ns 96.0784
+Ka 0 0 0
+Kd 0.078431 0.106666 0.671373
+Ks 0.5 0.5 0.5
+d 1
+newmtl BODY:16
+Ns 96.0784
+Ka 0 0 0
+Kd 0.9 0.9 0.9
+Ks 0.5 0.5 0.5
+d 1
+newmtl BUTTON_04:16
+Ns 96.0784
+Ka 0 0 0
+Kd 0 0 0.185098
+Ks 0.5 0.5 0.5
+d 1
+newmtl BUTTON_03:16
+Ns 96.0784
+Ka 0 0 0
+Kd 0 0.138039 0.439216
+Ks 0.5 0.5 0.5
+d 1
+newmtl BUTTON_02:16
+Ns 96.0784
+Ka 0 0 0
+Kd 0 0.373334 0.335686
+Ks 0.5 0.5 0.5
+d 1
+newmtl BUTTON_01:16
+Ns 96.0784
+Ka 0 0 0
+Kd 0.8 0.8 0.8
+Ks 0.5 0.5 0.5
+d 1
+newmtl Hole:17
+Ns 1
+Ka 0 0 0
+Kd 0.2 0.2 0.2
+Ks 0 0 0
+d 1
+newmtl Cupboard-units:17
+Ns 96.0784
+Ka 0 0 0
+Kd 1 1 1
+Ks 0.5 0.5 0.5
+d 1
+newmtl Metal-Handles:17
+Ns 100
+Ka 0 0 0
+Kd 0.7 0.7 0.7
+Ks 0.9 0.9 0.9
+d 1
+newmtl Wood-top-suround:17
+Ns 96.0784
+Ka 0 0 0
+Kd 1 1 1
+Ks 0.5 0.5 0.5
+d 1
+newmtl Worktops-main:17
+Ns 10
+Ka 0 0 0
+Kd 0.64 0.64 0.64
+Ks 0.1 0.1 0.1
+map_Kd Worktopt-light.jpg
+d 1
+newmtl Aluminum:17
+Ns 50
+Ka 0 0 0
+Kd 0.75 0.75 0.75
+Ks 0.8 0.8 0.8
+d 1
+newmtl Chrome:17
+Ns 128
+Ka 0 0 0
+Kd 0.7 0.7 0.7
+Ks 1 1 1
+d 1
+newmtl Zi:18
+Ns 37.2549
+Ka 0 0 0
+Kd 0.175706 0.110188 0.050745
+Ks 0.6 0.6 0.6
+d 1
+newmtl INOXs.002:18
+Ns 66.6667
+Ka 0 0 0
+Kd 0.643401 0.643401 0.643401
+Ks 1.10765 1.10765 1.10765
+d 1
+newmtl monitor:18
+Ns 196.078
+Ka 0 0 0
+Kd 0 0 0
+Ks 0.5 0.5 0.5
+d 1
+newmtl Wood-top-suround:19
+Ns 96.0784
+Ka 0 0 0
+Kd 1 1 1
+Ks 0.5 0.5 0.5
+d 1
+newmtl Worktops-main:19
+Ns 10
+Ka 0 0 0
+Kd 0.64 0.64 0.64
+Ks 0.1 0.1 0.1
+map_Kd Worktopt-light.jpg
+d 1
+newmtl Cupboard-units:19
+Ns 96.0784
+Ka 0 0 0
+Kd 1 1 1
+Ks 0.5 0.5 0.5
+d 1
+newmtl Metal-Handles:19
+Ns 100
+Ka 0 0 0
+Kd 0.7 0.7 0.7
+Ks 0.9 0.9 0.9
+d 1
+newmtl beige-baked:20
+Ns 0
+Ka 0 0 0
+Kd 1 0.997028 0.920902
+Ks 0 0 0
+map_Kd internal-air-conditioning-baked2.png
+d 1

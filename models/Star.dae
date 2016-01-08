@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+	<asset>
+		<contributor>
+			<authoring_tool>Poser 10.0.3.26510</authoring_tool>
+		</contributor>
+		<created>2015-12-15T15:22:18Z</created>
+		<modified>2015-12-15T15:22:18Z</modified>
+		<unit meter="2.62128" name="PoserUnit"/>
+		<up_axis>Y_UP</up_axis>
+	</asset>
+	<library_effects>
+		<effect id="effect-material-" name="effect-material-">
+			<profile_COMMON>
+				<technique sid="technique-material-">
+					<phong>
+						<ambient>
+							<color>0 0 0 1</color>
+						</ambient>
+						<diffuse>
+							<color>0.996078 0.921569 0.184314 1</color>
+						</diffuse>
+						<specular>
+							<color>0.6 0.6 0.6 1</color>
+						</specular>
+						<shininess>
+							<float>10</float>
+						</shininess>
+						<transparent>
+							<color>0 0 0 1</color>
+						</transparent>
+					</phong>
+				</technique>
+			</profile_COMMON>
+		</effect>
+	</library_effects>
+	<library_materials>
+		<material id="material-">
+			<instance_effect url="#effect-material-"/>
+		</material>
+	</library_materials>
+	<library_geometries>
+		<geometry id="estrellica_geometry">
+			<mesh>
+				<source id="estrellica_geometry-positions">
+					<float_array id="estrellica_geometry-positions-array" count="108">0.34875 0.0857193 0.00172505 0.0966621 0.08824 0.00172505 0.00141858 0.341053 0.00172495 -0.0971352 0.0893255 0.00172505 -0.34875 0.089623 0.00172495 -0.158054 -0.094652 0.00172495 -0.217834 -0.321103 0.00172495 -0.00190648 -0.209441 0.00172505 0.213245 -0.323515 0.00172495 0.155517 -0.0964074 0.00172505 -0.000103068 0.00316691 -0.125777 -1.82058e-005 0.00308583 0.125777 0.34875 0.0857193 0.00172505 0.0966621 0.08824 0.00172505 0.00141858 0.341053 0.00172495 -0.0971352 0.0893255 0.00172505 -0.34875 0.089623 0.00172495 -0.158054 -0.094652 0.00172495 -0.217834 -0.321103 0.00172495 -0.00190648 -0.209441 0.00172505 0.213245 -0.323515 0.00172495 0.155517 -0.0964074 0.00172505 -0.000103068 0.00316691 -0.125777 -1.82058e-005 0.00308583 0.125777 0.34875 0.0857193 0.00172505 0.0966621 0.08824 0.00172505 0.00141858 0.341053 0.00172495 -0.0971352 0.0893255 0.00172505 -0.34875 0.089623 0.00172495 -0.158054 -0.094652 0.00172495 -0.217834 -0.321103 0.00172495 -0.00190648 -0.209441 0.00172505 0.213245 -0.323515 0.00172495 0.155517 -0.0964074 0.00172505 -0.000103068 0.00316691 -0.125777 -1.82058e-005 0.00308583 0.125777</float_array>
+					<technique_common>
+						<accessor count="36" source="#estrellica_geometry-positions-array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique_common>
+				</source>
+				<source id="estrellica_geometry-normals">
+					<float_array id="estrellica_geometry-normals-array" count="108">0.54209 0.550018 0.635309 0.378591 0.598586 0.705949 0.00471132 0.344554 0.938755 -0.369327 0.602201 0.707779 -0.261072 0.274563 0.925449 -0.56513 -0.121857 0.815953 -0.25654 -0.190249 0.947625 -0.00222559 -0.504092 0.863647 0.258009 -0.191233 0.947028 0.567029 -0.128103 0.813676 0.272517 0.273244 -0.922536 0.00195598 0.0968874 0.995293 0.54209 0.550018 0.635309 0.378591 0.598586 0.705949 0.00471132 0.344554 0.938755 -0.369327 0.602201 0.707779 -0.261072 0.274563 0.925449 -0.56513 -0.121857 0.815953 -0.25654 -0.190249 0.947625 -0.00222559 -0.504092 0.863647 0.258009 -0.191233 0.947028 0.567029 -0.128103 0.813676 0.272517 0.273244 -0.922536 0.00195598 0.0968874 0.995293 0.54209 0.550018 0.635309 0.378591 0.598586 0.705949 0.00471132 0.344554 0.938755 -0.369327 0.602201 0.707779 -0.261072 0.274563 0.925449 -0.56513 -0.121857 0.815953 -0.25654 -0.190249 0.947625 -0.00222559 -0.504092 0.863647 0.258009 -0.191233 0.947028 0.567029 -0.128103 0.813676 0.272517 0.273244 -0.922536 0.00195598 0.0968874 0.995293</float_array>
+					<technique_common>
+						<accessor count="36" source="#estrellica_geometry-normals-array" stride="3">
+							<param name="X" type="float"/>
+							<param name="Y" type="float"/>
+							<param name="Z" type="float"/>
+						</accessor>
+					</technique_common>
+				</source>
+				<source id="estrellica_geometry-uvs">
+					<float_array id="estrellica_geometry-uvs-array" count="138">0.626409 0.064409 0.548284 0.007647 0.451716 0.007647 0.373591 0.064409 0.34375 0.15625 0.373591 0.248091 0.451716 0.304853 0.548284 0.304853 0.626409 0.248091 0.65625 0.15625 0.375 0.3125 0.4 0.3125 0.425 0.3125 0.45 0.3125 0.475 0.3125 0.5 0.3125 0.525 0.3125 0.55 0.3125 0.575 0.3125 0.6 0.3125 0.625 0.3125 0.5 0.68844 0.5 0.15625 0.626409 0.064409 0.548284 0.007647 0.451716 0.007647 0.373591 0.064409 0.34375 0.15625 0.373591 0.248091 0.451716 0.304853 0.548284 0.304853 0.626409 0.248091 0.65625 0.15625 0.375 0.3125 0.4 0.3125 0.425 0.3125 0.45 0.3125 0.475 0.3125 0.5 0.3125 0.525 0.3125 0.55 0.3125 0.575 0.3125 0.6 0.3125 0.625 0.3125 0.5 0.68844 0.5 0.15625 0.626409 0.064409 0.548284 0.007647 0.451716 0.007647 0.373591 0.064409 0.34375 0.15625 0.373591 0.248091 0.451716 0.304853 0.548284 0.304853 0.626409 0.248091 0.65625 0.15625 0.375 0.3125 0.4 0.3125 0.425 0.3125 0.45 0.3125 0.475 0.3125 0.5 0.3125 0.525 0.3125 0.55 0.3125 0.575 0.3125 0.6 0.3125 0.625 0.3125 0.5 0.68844 0.5 0.15625</float_array>
+					<technique_common>
+						<accessor count="69" source="#estrellica_geometry-uvs-array" stride="2">
+							<param name="S" type="float"/>
+							<param name="T" type="float"/>
+						</accessor>
+					</technique_common>
+				</source>
+				<vertices id="estrellica_geometry-vertices">
+					<input semantic="POSITION" source="#estrellica_geometry-positions"/>
+				</vertices>
+				<polylist count="60" material="material-">
+					<input offset="0" semantic="VERTEX" source="#estrellica_geometry-vertices" set="0"/>
+					<input offset="1" semantic="NORMAL" source="#estrellica_geometry-normals" set="0"/>
+					<input offset="2" semantic="TEXCOORD" source="#estrellica_geometry-uvs" set="0"/>
+					<vcount>3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3</vcount>
+					<p>0 0 10 10 10 21 1 1 11 1 1 11 10 10 21 2 2 12 2 2 12 10 10 21 3 3 13 3 3 13 10 10 21 4 4 14 4 4 14 10 10 21 5 5 15 5 5 15 10 10 21 6 6 16 6 6 16 10 10 21 7 7 17 7 7 17 10 10 21 8 8 18 8 8 18 10 10 21 9 9 19 9 9 19 10 10 21 0 0 20 0 0 0 11 11 22 9 9 9 9 9 9 11 11 22 8 8 8 8 8 8 11 11 22 7 7 7 7 7 7 11 11 22 6 6 6 6 6 6 11 11 22 5 5 5 5 5 5 11 11 22 4 4 4 4 4 4 11 11 22 3 3 3 3 3 3 11 11 22 2 2 2 2 2 2 11 11 22 1 1 1 1 1 1 11 11 22 0 0 0 12 12 33 22 22 44 13 13 34 13 13 34 22 22 44 14 14 35 14 14 35 22 22 44 15 15 36 15 15 36 22 22 44 16 16 37 16 16 37 22 22 44 17 17 38 17 17 38 22 22 44 18 18 39 18 18 39 22 22 44 19 19 40 19 19 40 22 22 44 20 20 41 20 20 41 22 22 44 21 21 42 21 21 42 22 22 44 12 12 43 12 12 23 23 23 45 21 21 32 21 21 32 23 23 45 20 20 31 20 20 31 23 23 45 19 19 30 19 19 30 23 23 45 18 18 29 18 18 29 23 23 45 17 17 28 17 17 28 23 23 45 16 16 27 16 16 27 23 23 45 15 15 26 15 15 26 23 23 45 14 14 25 14 14 25 23 23 45 13 13 24 13 13 24 23 23 45 12 12 23 24 24 56 34 34 67 25 25 57 25 25 57 34 34 67 26 26 58 26 26 58 34 34 67 27 27 59 27 27 59 34 34 67 28 28 60 28 28 60 34 34 67 29 29 61 29 29 61 34 34 67 30 30 62 30 30 62 34 34 67 31 31 63 31 31 63 34 34 67 32 32 64 32 32 64 34 34 67 33 33 65 33 33 65 34 34 67 24 24 66 24 24 46 35 35 68 33 33 55 33 33 55 35 35 68 32 32 54 32 32 54 35 35 68 31 31 53 31 31 53 35 35 68 30 30 52 30 30 52 35 35 68 29 29 51 29 29 51 35 35 68 28 28 50 28 28 50 35 35 68 27 27 49 27 27 49 35 35 68 26 26 48 26 26 48 35 35 68 25 25 47 25 25 47 35 35 68 24 24 46</p>
+				</polylist>
+			</mesh>
+		</geometry>
+	</library_geometries>
+	<library_visual_scenes>
+		<visual_scene id="Poser_scene">
+			<node id="Poser_scene_root">
+				<node id="estrellica_node" name="estrellica" sid="estrellica_node">
+					<translate sid="origin">0 0 0</translate>
+					<translate sid="translate">0 0.00876893 0</translate>
+					<rotate sid="rotateZ">0 0 1 0</rotate>
+					<rotate sid="rotateX">1 0 0 90</rotate>
+					<rotate sid="rotateY">0 1 0 0</rotate>
+					<instance_geometry url="#estrellica_geometry">
+						<bind_material>
+							<technique_common>
+								<instance_material symbol="material-" target="#material-"/>
+							</technique_common>
+						</bind_material>
+					</instance_geometry>
+				</node>
+			</node>
+		</visual_scene>
+	</library_visual_scenes>
+	<scene>
+		<instance_visual_scene url="#Poser_scene"/>
+	</scene>
+</COLLADA>
